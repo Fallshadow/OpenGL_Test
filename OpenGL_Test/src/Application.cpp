@@ -44,10 +44,10 @@ int main()
 
 		float positions[] =
 		{
-			-0.5f, -0.5f, 0.0f, 0.0f,
-			 0.5f, -0.5f, 1.0f, 0.0f,
-			-0.5f,  0.5f, 0.0f, 1.0f,
-			 0.5f,  0.5f, 1.0f, 1.0f
+			-1.0f, -1.0f, 0.0f, 0.0f,
+			 1.0f, -1.0f, 1.0f, 0.0f,
+			-1.0f,  1.0f, 0.0f, 1.0f,
+			 1.0f,  1.0f, 1.0f, 1.0f
 		};
 
 		unsigned int indices[] =
@@ -60,23 +60,20 @@ int main()
 		GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
 		VertexBuffer vb(positions, 4 * 4 * sizeof(float));
-
 		VertexArray va;
 		VertexBufferLayout layout;
 		layout.Push<float>(2);
 		layout.Push<float>(2);
-		va.AddBuffer(vb, layout);
+		va.LayoutVertexBuffer(vb, layout);
 
 		IndexBuffer ib(indices, 6);
 
 		Shader shader("res/shaders/Basic.shader");
 		shader.Bind();
 
-		 Texture texture("res/textures/ChernoLogo.png");
-		//Texture texture("res/textures/PaoGril.png");
+		Texture texture("res/textures/ChernoLogo.png");
 		texture.Bind();
 		shader.SetUniform1i("u_Texture", 0);
-		// shader.SetUniform4f("u_Color", 1.0f,0.1f, 0.1f, 1.0f);
 
 		shader.UnBind();
 		va.UnBind();
