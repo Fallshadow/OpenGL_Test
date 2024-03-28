@@ -14,6 +14,9 @@
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_glfw_gl3.h"
+
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
 
@@ -80,9 +83,6 @@ int main()
 
 		glm::mat4 proj = glm::ortho(0.0f, 800.0f, 0.0f, 600.0f, -1.0f, 1.0f);
 		glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(-100, 0, 0));
-		glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(200, 200, 0));
-
-		shader.SetUniformMat4f("u_MVP", proj * view * model);
 
 		shader.UnBind();
 		va.UnBind();
@@ -90,6 +90,16 @@ int main()
 		ib.UnBind();
 
 		Renderer renderer;
+
+		ImGui::CreateContext();
+		ImGui_ImplGlfwGL3_Init(window, true);
+		ImGui::StyleColorsDark();
+
+		bool show_demo_window = true;
+		bool show_another_window = false;
+		ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+
+		glm::vec3 translation(200, 200, 0);
 
 		// 渲染循环
 		while (!glfwWindowShouldClose(window))
@@ -100,12 +110,28 @@ int main()
 			// 在每个新的渲染迭代开始的时候我们总是希望清屏，否则我们仍能看见上一次迭代的渲染结果（这可能是你想要的效果，但通常这不是）。
 			// 我们还可以指定清除底色glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 			renderer.Clear();
+			ImGui_ImplGlfwGL3_NewFrame();
 
-			shader.Bind();
+			glm::mat4 model = glm::translate(glm::mat4(1.0f), translation);
+
+			
+
+			
 			va.Bind();
 			ib.Bind();
+			shader.Bind();
+			shader.SetUniformMat4f("u_MVP", proj * view * model);
 
 			renderer.Draw(va, ib, shader);
+
+			{
+				ImGui::SliderFloat3("Translation", &translation.x, 0.0f, 800.0f);            // Edit 1 float using a slider from 0.0f to 1.0f    
+				ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+			}
+
+
+			ImGui::Render();
+			ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
 
 			// 交换颜色缓冲（它是一个储存着GLFW窗口每一个像素颜色值的大缓冲），它在这一迭代中被用来绘制，并且将会作为输出显示在屏幕上。
 			glfwSwapBuffers(window);
@@ -114,6 +140,10 @@ int main()
 			glfwPollEvents();
 		}
 	}
+
+	// Cleanup
+	ImGui_ImplGlfwGL3_Shutdown();
+	ImGui::DestroyContext();
 	glfwTerminate();
 	return 0;
 }
