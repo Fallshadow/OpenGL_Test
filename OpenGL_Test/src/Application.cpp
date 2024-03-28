@@ -11,6 +11,9 @@
 #include "Texture.h"
 #include "Renderer.h"
 
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
 
@@ -74,6 +77,9 @@ int main()
 		Texture texture("res/textures/ChernoLogo.png");
 		texture.Bind();
 		shader.SetUniform1i("u_Texture", 0);
+
+		glm::mat4 proj = glm::ortho(-2.0f, 2.0f, -1.5f, 1.5f, -1.0f, 1.0f);
+		shader.SetUniformMat4f("u_MVP", proj);
 
 		shader.UnBind();
 		va.UnBind();
