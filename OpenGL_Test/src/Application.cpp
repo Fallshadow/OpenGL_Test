@@ -29,7 +29,7 @@ int main()
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	
 	// 创建800 * 600 的标题为OpenGL的窗口
-	GLFWwindow* window = glfwCreateWindow(1920, 1080, "OpenGL", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(640, 480, "OpenGL", NULL, NULL);
 	if (!window)
 	{
 		glfwTerminate();
