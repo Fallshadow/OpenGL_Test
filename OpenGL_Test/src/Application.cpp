@@ -17,6 +17,8 @@
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw_gl3.h"
 
+#include "tests/TestClearColor.h"
+
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
 
@@ -44,50 +46,29 @@ int main()
 	// 设置渲染范围同步为窗口大小
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
-	if (glewInit() != GLEW_OK) std::cout << "Error" << std::endl;
+	if (glewInit() != GLEW_OK) 
+		std::cout << "Error" << std::endl;
 
 	{
-
-		float positions[] =
-		{
-			-50.0f, -50.0f, 0.0f, 0.0f,
-			 50.0f, -50.0f, 1.0f, 0.0f,
-			-50.0f,  50.0f, 0.0f, 1.0f,
-			 50.0f,  50.0f, 1.0f, 1.0f
-		};
-
-		unsigned int indices[] =
-		{
-			0, 1, 2,
-			1, 2, 3
-		};
-
+		/**
+		* 混合:
+		* 将输出颜色(判断着色器输出的颜色)和目标缓冲区已有的颜色结合
+		* glEnable/glDisable(启用&关闭) => glBlendFunc(指定颜色因子) => glBlendEquation(指定混合模式)
+		* glBlendEquation(mode) mode: src和dest的混合方式(默认GL_FUNC_ADD, 叠加)
+		*
+		**/
+		/* 启用混合(默认不会启用) */
 		GLCall(glEnable(GL_BLEND));
+		/**
+		 * glBlendFunc(src, dest) 指定颜色因子
+		 * src 指定输出颜色(RGBA)因子的计算方式, 默认为GL_ONE
+		 * dest 指定目标颜色因子的计算方式, 默认为GL_ZERO
+		 * GL_SRC_ALPHA 因为src的alpha为0, GL_ONE_MINUS_SRC_ALPHA 1-src.alpha
+		 * RGBA = Srgba * GL_SRC_ALPHA + Drgba * GL_ONE_MINUS_SRC_ALPHA
+		 **/
 		GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
-		VertexBuffer vb(positions, 4 * 4 * sizeof(float));
-		VertexArray va;
-		VertexBufferLayout layout;
-		layout.Push<float>(2);
-		layout.Push<float>(2);
-		va.LayoutVertexBuffer(vb, layout);
-
-		IndexBuffer ib(indices, 6);
-
-		Shader shader("res/shaders/Basic.shader");
-		shader.Bind();
-
-		Texture texture("res/textures/ChernoLogo.png");
-		texture.Bind();
-		shader.SetUniform1i("u_Texture", 0);
-
-		glm::mat4 proj = glm::ortho(0.0f, 800.0f, 0.0f, 600.0f, -1.0f, 1.0f);
-		glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0));
-
-		shader.UnBind();
-		va.UnBind();
-		vb.UnBind();
-		ib.UnBind();
+		
 
 		Renderer renderer;
 
@@ -95,64 +76,26 @@ int main()
 		ImGui_ImplGlfwGL3_Init(window, true);
 		ImGui::StyleColorsDark();
 
-		bool show_demo_window = true;
-		bool show_another_window = false;
-		ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+		test::TestClearColor test;
 
-		glm::vec3 tranlationA(200, 200, 0);
-		glm::vec3 tranlationB(400, 200, 0);
-
-		// 渲染循环
 		while (!glfwWindowShouldClose(window))
 		{
-			// 处理输入
 			processInput(window);
-
-			// 在每个新的渲染迭代开始的时候我们总是希望清屏，否则我们仍能看见上一次迭代的渲染结果（这可能是你想要的效果，但通常这不是）。
-			// 我们还可以指定清除底色glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 			renderer.Clear();
+
+			test.OnUpdate(0.0f);
+			test.OnRender();
+
 			ImGui_ImplGlfwGL3_NewFrame();
 
-
-			va.Bind();
-			ib.Bind();
-
 			{
-				glm::mat4 model = glm::translate(glm::mat4(1.0f), tranlationA);
-				glm::mat4 mvp = proj * view * model;
-				shader.Bind();
-				shader.SetUniformMat4f("u_MVP", mvp);
-				renderer.Draw(va, ib, shader);
+				test.OnImGuiRender();
 			}
-			{
-				glm::mat4 model = glm::translate(glm::mat4(1.0f), tranlationB);
-				glm::mat4 mvp = proj * view * model;
-
-				shader.Bind();
-				shader.SetUniformMat4f("u_MVP", mvp);
-
-				renderer.Draw(va, ib, shader);
-			}
-
-
-
-
-			renderer.Draw(va, ib, shader);
-
-			{
-				ImGui::SliderFloat3("TranlationA", &tranlationA.x, 0.0f, 960.0f);
-				ImGui::SliderFloat3("TranlationB", &tranlationB.x, 0.0f, 960.0f);
-				ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-			}
-
 
 			ImGui::Render();
 			ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
 
-			// 交换颜色缓冲（它是一个储存着GLFW窗口每一个像素颜色值的大缓冲），它在这一迭代中被用来绘制，并且将会作为输出显示在屏幕上。
 			glfwSwapBuffers(window);
-
-			// 检查有没有触发什么事件（比如键盘输入、鼠标移动等）、更新窗口状态，并调用对应的回调函数（可以通过回调方法手动设置）
 			glfwPollEvents();
 		}
 	}
