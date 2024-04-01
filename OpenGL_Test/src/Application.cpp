@@ -18,6 +18,8 @@
 #include "imgui/imgui_impl_glfw_gl3.h"
 
 #include "tests/TestClearColor.h"
+#include "tests/TestMenu.h"
+
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
@@ -76,20 +78,32 @@ int main()
 		ImGui_ImplGlfwGL3_Init(window, true);
 		ImGui::StyleColorsDark();
 
-		test::TestClearColor test;
+		test::Test* currentTest = nullptr;
+		test::TestMenu* testMenu = new test::TestMenu(currentTest);
+		currentTest = testMenu;
+
+		testMenu->RegisterTest<test::TestClearColor>("ClearColor");
 
 		while (!glfwWindowShouldClose(window))
 		{
+			GLCall(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
 			processInput(window);
 			renderer.Clear();
 
-			test.OnUpdate(0.0f);
-			test.OnRender();
-
 			ImGui_ImplGlfwGL3_NewFrame();
 
+			if (currentTest)
 			{
-				test.OnImGuiRender();
+				currentTest->OnUpdate(0.0f);
+				currentTest->OnRender();
+				ImGui::Begin("ImGui-Test");
+				if (currentTest != testMenu && ImGui::Button("<-"))
+				{
+					delete currentTest;
+					currentTest = testMenu;
+				}
+				currentTest->OnImGuiRender();
+				ImGui::End();
 			}
 
 			ImGui::Render();
@@ -97,6 +111,12 @@ int main()
 
 			glfwSwapBuffers(window);
 			glfwPollEvents();
+		}
+
+		delete currentTest;
+		if (currentTest != testMenu)
+		{
+			delete testMenu;
 		}
 	}
 
