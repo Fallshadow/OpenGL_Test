@@ -153,6 +153,7 @@
     <ClCompile Include="src\tests\Test.cpp" />
     <ClCompile Include="src\tests\Test.h" />
     <ClCompile Include="src\tests\TestBatchRender.cpp" />
+    <ClCompile Include="src\tests\TestBatchRenderColor.cpp" />
     <ClCompile Include="src\tests\TestClearColor.cpp" />
     <ClCompile Include="src\tests\TestMenu.cpp" />
     <ClCompile Include="src\tests\TestTexture2D.cpp" />
@@ -173,6 +174,7 @@
     <ClInclude Include="src\Renderer.h" />
     <ClInclude Include="src\Shader.h" />
     <ClInclude Include="src\tests\TestBatchRender.h" />
+    <ClInclude Include="src\tests\TestBatchRenderColor.h" />
     <ClInclude Include="src\tests\TestClearColor.h" />
     <ClInclude Include="src\tests\TestMenu.h" />
     <ClInclude Include="src\tests\TestTexture2D.h" />
@@ -480,6 +482,7 @@
   <ItemGroup>
     <None Include="res\shaders\Basic.shader" />
     <None Include="res\shaders\Batch.shader" />
+    <None Include="res\shaders\BatchColor.shader" />
     <None Include="src\vendor\glm\detail\func_common.inl" />
     <None Include="src\vendor\glm\detail\func_common_simd.inl" />
     <None Include="src\vendor\glm\detail\func_exponential.inl" />
