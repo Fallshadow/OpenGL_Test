@@ -81,6 +81,9 @@
     <ClCompile Include="src\tests\TestBatchRenderColor.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="src\tests\TestBatchRenderTexture.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\CheckError.h">
@@ -1010,6 +1013,9 @@
     <ClInclude Include="src\tests\TestBatchRenderColor.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="src\tests\TestBatchRenderTexture.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\Basic.shader" />
@@ -1429,9 +1435,13 @@
     </None>
     <None Include="res\shaders\Batch.shader" />
     <None Include="res\shaders\BatchColor.shader" />
+    <None Include="res\shaders\BatchTexture.shader" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\textures\ChernoLogo.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\textures\Pao.jpg">
       <Filter>资源文件</Filter>
     </Image>
   </ItemGroup>
