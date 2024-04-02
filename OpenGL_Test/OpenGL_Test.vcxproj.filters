@@ -84,6 +84,9 @@
     <ClCompile Include="src\tests\TestBatchRenderTexture.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="src\tests\TestBatchRenderDynamicVertex.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\CheckError.h">
@@ -1014,6 +1017,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="src\tests\TestBatchRenderTexture.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\tests\TestBatchRenderDynamicVertex.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
