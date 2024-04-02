@@ -16,6 +16,7 @@
 #include "tests/TestBatchRenderColor.h"
 #include "tests/TestBatchRenderTexture.h"
 #include "tests/TestBatchRenderDynamicVertex.h"
+#include "tests/TestBatchRenderDynamicIndex.h"
 
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -62,6 +63,7 @@ int main()
 		testMenu->RegisterTest<test::TestBatchRenderColor>("Batch Render Color");
 		testMenu->RegisterTest<test::TestBatchRenderTexture>("Batch Render Texture");
 		testMenu->RegisterTest<test::TestBatchRenderDynamicVertex>("Batch Render DynamicVertex");
+		testMenu->RegisterTest<test::TestBatchRenderDynamicIndex>("Batch Render DynamicIndex");
 
 		while (!glfwWindowShouldClose(window))
 		{
