@@ -12,6 +12,7 @@
 #include "tests/TestClearColor.h"
 #include "tests/TestMenu.h"
 #include "tests/TestTexture2D.h"
+#include "tests/TestBatchRender.h"
 
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -54,6 +55,7 @@ int main()
 
 		testMenu->RegisterTest<test::TestClearColor>("ClearColor");
 		testMenu->RegisterTest<test::TestTexture2D>("2D Texture");
+		testMenu->RegisterTest<test::TestBatchRender>("Batch Render");
 
 		while (!glfwWindowShouldClose(window))
 		{
